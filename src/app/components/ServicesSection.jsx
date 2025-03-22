@@ -1,11 +1,13 @@
-import dbConnect from "@/lib/dbConnect";
+import dbConnect, { collectionNamesObj } from "@/lib/dbConnect";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa6";
 
 export default async function ServicesSection() {
-  const data = await dbConnect("services").find({}).toArray();
+  const data = await dbConnect(collectionNamesObj.servicesCollection)
+    .find({})
+    .toArray();
   return (
     <div className="grid grid-cols-12 gap-6">
       {data.map((item) => {
