@@ -1,16 +1,44 @@
 "use client";
 import { registerUser } from "@/app/actions/auth/registerUser";
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function RegisterForm() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    registerUser({ name, email, password });
+
+    setLoading(true);
+
+    try {
+      const result = await registerUser({ name, email, password });
+
+      console.log(result);
+
+      if (result?.success) {
+        toast.success("Registration successful!");
+        form.reset();
+        router.push("/login");
+      } else {
+        toast.error(
+          result?.message || "Registration failed. Please try again."
+        );
+      }
+    } catch (error) {
+      toast.error(
+        error?.message || "An unexpected error occurred. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,8 +70,16 @@ export default function RegisterForm() {
         required
       />
 
-      <button className="w-full h-12 my-8 bg-[#FF3811] text-white font-bold cursor-pointer">
-        Sign Up
+      <button
+        disabled={loading}
+        type="submit"
+        className="w-full h-12 my-8 bg-[#FF3811] text-white font-bold cursor-pointer"
+      >
+        {loading ? (
+          <ImSpinner9 className="animate-spin m-auto text-xl" />
+        ) : (
+          "Sign Up"
+        )}
       </button>
       <p className="text-center">Or Sign In with</p>
 

@@ -1,10 +1,14 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function LoginForm() {
-  // const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -12,16 +16,34 @@ export default function LoginForm() {
     const email = form.email.value;
     const password = form.password.value;
 
+    if (!email || !password) {
+      toast.error("Please fill in both fields");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      await signIn("credentials", {
+      const response = await signIn("credentials", {
         email,
         password,
         callbackUrl: "/",
         redirect: false,
       });
-      // router.push("/");
+      console.log(response);
+      if (response.ok) {
+        toast.success("Logged In Successfully!");
+        router.push("/");
+        form.reset();
+      } else {
+        toast.error("Authentication failed. Please check your credentials.");
+      }
     } catch (error) {
-      console.log(error);
+      toast.error(
+        error?.message || "An unexpected error occurred. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,8 +67,16 @@ export default function LoginForm() {
         required
       />
 
-      <button className="w-full h-12 my-8 bg-[#FF3811] text-white cursor-pointer font-bold">
-        Sign In
+      <button
+        disabled={loading}
+        type="submit"
+        className="w-full h-12 my-8 bg-[#FF3811] text-white cursor-pointer font-bold"
+      >
+        {loading ? (
+          <ImSpinner9 className="animate-spin m-auto text-xl" />
+        ) : (
+          "Sign In"
+        )}
       </button>
       <p className="text-center">Or Sign In with</p>
 
