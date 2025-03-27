@@ -67,6 +67,15 @@ export default function Navbar() {
         <ul className="menu menu-horizontal px-1">
           {status === "authenticated" ? (
             <>
+              <p className="flex items-center justify-center mr-1">
+                <Image
+                  className="rounded-full"
+                  src={session?.user?.image || "/assets/icons/person.svg"}
+                  width={24}
+                  height={24}
+                  alt="user-logo"
+                />
+              </p>
               <li>
                 <button onClick={() => signOut()}>Log Out</button>
               </li>

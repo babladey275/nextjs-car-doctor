@@ -1,28 +1,33 @@
 "use client";
-import { signIn } from "next-auth/react";
-import React from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import toast from "react-hot-toast";
 import { FaGithub, FaGoogle } from "react-icons/fa6";
 
-const handleSocialLogin = (providerName) => {
-  signIn(providerName);
-};
-
 export default function SocialLogin() {
+  const router = useRouter();
+  const session = useSession();
+
+  const handleSocialLogin = (providerName) => {
+    signIn(providerName);
+  };
+
+  useEffect(() => {
+    if (session?.status === "authenticated") {
+      router.push("/");
+      toast.success("Logged in Successfully!");
+    }
+  }, [session?.status]);
   return (
-    <div className="flex justify-center gap-8">
+    <div className="flex justify-center">
       <button
         type="button"
         onClick={() => handleSocialLogin("google")}
-        className="bg-[#4285F4] rounded-full p-3 cursor-pointer"
+        className="bg-[#333] text-white text-xl btn w-full h-12 cursor-pointer flex items-center justify-center gap-2"
       >
-        <FaGoogle className="text-white text-xl" />
-      </button>
-      <button
-        type="button"
-        onClick={() => handleSocialLogin("github")}
-        className="bg-[#333] rounded-full p-3 cursor-pointer"
-      >
-        <FaGithub className="text-white text-xl" />
+        <FaGoogle className=" " />
+        <span>Sign in with Google</span>
       </button>
     </div>
   );
