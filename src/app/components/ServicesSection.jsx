@@ -28,15 +28,12 @@ export default async function ServicesSection() {
             <div className="flex justify-between items-center mt-4">
               <div>
                 <h2 className="font-bold text-xl">{item.title}</h2>
-                <p className="font-bold text-xl text-orange-500">
+                <p className="font-bold text-xl text-[#FF3811]">
                   Price : ${item.price}
                 </p>
               </div>
               <div>
-                <Link
-                  href={`/services/${item._id}`}
-                  className="text-orange-500"
-                >
+                <Link href={`/services/${item._id}`} className="text-[#FF3811]">
                   <FaArrowRight />
                 </Link>
               </div>

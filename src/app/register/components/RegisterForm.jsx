@@ -1,5 +1,6 @@
 "use client";
 import { registerUser } from "@/app/actions/auth/registerUser";
+import SocialLogin from "@/app/components/Shared/SocialLogin";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -73,17 +74,15 @@ export default function RegisterForm() {
       <button
         disabled={loading}
         type="submit"
-        className="w-full h-12 my-8 bg-[#FF3811] text-white font-bold cursor-pointer"
+        className="w-full h-12 my-8 bg-[#FF3811] text-white  text-xl font-bold cursor-pointer"
       >
-        {loading ? (
-          <ImSpinner9 className="animate-spin m-auto text-xl" />
-        ) : (
-          "Sign Up"
-        )}
+        {loading ? <ImSpinner9 className="animate-spin m-auto" /> : "Sign Up"}
       </button>
-      <p className="text-center">Or Sign In with</p>
-
-      <p className="text-center">
+      <p className="text-center text-[18px]">Or Sign In with</p>
+      <div className="my-7">
+        <SocialLogin />
+      </div>
+      <p className="text-center text-[18px]">
         Don't Have an account?{" "}
         <Link href="/login" className="text-[#FF3811] font-bold">
           Login

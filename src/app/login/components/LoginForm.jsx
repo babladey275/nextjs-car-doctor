@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { ImSpinner9 } from "react-icons/im";
+import SocialLogin from "@/app/components/Shared/SocialLogin";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleLogin} className="w-full max-w-lg">
-      <label className="fieldset-label font-bold mt-8">Email</label>
+      <label className="fieldset-label font-bold">Email</label>
       <input
         name="email"
         type="email"
@@ -70,17 +71,15 @@ export default function LoginForm() {
       <button
         disabled={loading}
         type="submit"
-        className="w-full h-12 my-8 bg-[#FF3811] text-white cursor-pointer font-bold"
+        className="w-full h-12 my-8 bg-[#FF3811] text-white cursor-pointer text-xl font-bold"
       >
-        {loading ? (
-          <ImSpinner9 className="animate-spin m-auto text-xl" />
-        ) : (
-          "Sign In"
-        )}
+        {loading ? <ImSpinner9 className="animate-spin m-auto" /> : "Sign In"}
       </button>
-      <p className="text-center">Or Sign In with</p>
-
-      <p className="text-center">
+      <p className="text-center text-[18px]">Or Sign In with</p>
+      <div className="my-7">
+        <SocialLogin />
+      </div>
+      <p className="text-center text-[18px]">
         Already have an account?{" "}
         <Link href="/register" className="text-[#FF3811] font-bold">
           Register
