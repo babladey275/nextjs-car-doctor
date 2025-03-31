@@ -23,7 +23,7 @@ export default function Navbar() {
           <Link href={"/blog"}>Blog</Link>
         </li>
         <li>
-          <Link href={"/contact"}>Contact</Link>
+          <Link href={"/my-bookings"}>My Bookings</Link>
         </li>
       </>
     );
