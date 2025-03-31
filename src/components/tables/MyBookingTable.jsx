@@ -1,3 +1,4 @@
+import DeleteBooking from "@/app/my-bookings/components/DeleteBooking";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -100,7 +101,7 @@ export default function MyBookingTable({ data }) {
                       </div>
                     </td>
 
-                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="flex items-center gap-4 justify-end px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
                         <Link
                           href={`/my-bookings/${item._id}`}
@@ -109,6 +110,9 @@ export default function MyBookingTable({ data }) {
                         >
                           <FaRegEdit className="h-4 w-4 sm:h-5 sm:w-5" />
                         </Link>
+                      </div>
+                      <div>
+                        <DeleteBooking id={item._id} />
                       </div>
                     </td>
                   </tr>
