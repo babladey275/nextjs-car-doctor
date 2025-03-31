@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import React from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import {
   FaUser,
@@ -12,15 +12,54 @@ import {
   FaArrowRight,
   FaDollarSign,
 } from "react-icons/fa";
+import { ImSpinner9 } from "react-icons/im";
 
 const CheckoutForm = ({ data }) => {
   const { data: session } = useSession();
+  const [loading, setLoading] = useState(false);
 
   const handleBookService = async (e) => {
-    toast("Submitting Booking...");
+    toast("Submitting Booking...", { id: "submitting" });
     e.preventDefault();
 
     const form = e.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const date = form.date.value;
+    const phone = form.phone.value;
+    const address = form.address.value;
+    const bookingPayload = {
+      // session
+      customerName: name,
+      email,
+
+      //user inputs
+      date,
+      phone,
+      address,
+
+      // Extra information
+      service_id: data._id,
+      service_name: data.title,
+      service_img: data.img,
+      service_price: data.price,
+    };
+
+    setLoading(true);
+
+    const res = await fetch("http://localhost:3000/api/service", {
+      method: "POST",
+      body: JSON.stringify(bookingPayload),
+    });
+    const postedResponse = await res.json();
+
+    if (postedResponse.insertedId) {
+      toast.success("Booking Successful!", { id: "submitting" });
+      setLoading(false);
+    } else {
+      toast.error("Booking failed. Please try again.", { id: "submitting" });
+      setLoading(false);
+    }
   };
 
   return (
@@ -113,6 +152,7 @@ const CheckoutForm = ({ data }) => {
                   </label>
                   <div className="relative">
                     <input
+                      required
                       name="date"
                       type="date"
                       className="w-full px-4 py-3 pl-11 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-[#FF3811] focus:border-transparent"
@@ -130,6 +170,7 @@ const CheckoutForm = ({ data }) => {
                   </label>
                   <div className="relative">
                     <input
+                      required
                       name="phone"
                       type="tel"
                       placeholder="Your Phone Number"
@@ -148,6 +189,7 @@ const CheckoutForm = ({ data }) => {
                   </label>
                   <div className="relative">
                     <input
+                      required
                       name="address"
                       type="text"
                       placeholder="Your Location"
@@ -177,11 +219,18 @@ const CheckoutForm = ({ data }) => {
 
               {/* Submit Button */}
               <button
+                disabled={loading}
                 type="submit"
-                className="w-full flex justify-center items-center gap-2 px-6 py-4 rounded-xl text-lg font-semibold text-white bg-[#FF3811] hover:bg-[#d42e0d] focus:outline-none focus:ring-2 focus:ring-[#FF3811] focus:ring-offset-2 transition-all duration-200 hover:shadow-lg active:scale-[0.98]"
+                className="w-full flex justify-center items-center gap-2 px-6 py-4 rounded-xl text-lg font-semibold text-white bg-[#FF3811] hover:bg-[#d42e0d] hover:shadow-lg cursor-pointer"
               >
-                Confirm Booking
-                <FaArrowRight className="w-4 h-4 mt-0.5" />
+                {loading ? (
+                  <ImSpinner9 className="animate-spin m-auto" />
+                ) : (
+                  <>
+                    Confirm Booking
+                    <FaArrowRight className="w-4 h-4 mt-0.5" />
+                  </>
+                )}
               </button>
             </div>
           </form>

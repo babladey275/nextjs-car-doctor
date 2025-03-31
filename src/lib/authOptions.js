@@ -100,6 +100,5 @@ export const authOptions = {
   // JWT options
   jwt: {
     maxAge: 30 * 24 * 60 * 60, // JWT token expiration (30 days)
-    updateAge: 60 * 60 * 24, // JWT token update interval (1 day)
   },
 };
