@@ -15,52 +15,47 @@ import {
 } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
 
-const CheckoutForm = ({ data }) => {
+export default function BookingUpdateForm({ data }) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleBookService = async (e) => {
-    toast("Submitting Booking...", { id: "submitting" });
+    toast("Updating Booking...", { id: "submitting" });
     e.preventDefault();
 
     const form = e.target;
-    const name = form.name.value;
-    const email = form.email.value;
     const date = form.date.value;
     const phone = form.phone.value;
     const address = form.address.value;
-    const bookingPayload = {
-      // session
-      customerName: name,
-      email,
 
-      //user inputs
+    const bookingPayload = {
       date,
       phone,
       address,
-
-      // Extra information
-      service_id: data._id,
-      service_name: data.title,
-      service_img: data.img,
-      service_price: data.price,
     };
 
     setLoading(true);
 
-    const res = await fetch("http://localhost:3000/api/service", {
-      method: "POST",
-      body: JSON.stringify(bookingPayload),
-    });
+    const res = await fetch(
+      `http://localhost:3000/api/my-bookings/${data._id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(bookingPayload),
+      }
+    );
     const postedResponse = await res.json();
 
-    if (postedResponse.insertedId) {
-      toast.success("Booking Successful!", { id: "submitting" });
-      router.push("/my-bookings");
+    console.log("hello bro", postedResponse);
+
+    if (postedResponse.modifiedCount) {
+      toast.success("Booking Update Successful!", { id: "submitting" });
       setLoading(false);
+      router.push("/my-bookings");
     } else {
-      toast.error("Booking failed. Please try again.", { id: "submitting" });
+      toast.error("Booking Update failed. Please try again.", {
+        id: "submitting",
+      });
       setLoading(false);
     }
   };
@@ -72,9 +67,9 @@ const CheckoutForm = ({ data }) => {
           {/* Form Header */}
           <div className="bg-[#FF3811] py-8 px-6 text-center space-y-1">
             <h2 className="text-3xl font-bold text-white tracking-tight">
-              Book Your Service
+              Update Your Booking
             </h2>
-            <p className="text-white/95 font-medium">{data?.title}</p>
+            <p className="text-white/95 font-medium">{data?.service_name}</p>
           </div>
 
           {/* Service Summary */}
@@ -83,18 +78,18 @@ const CheckoutForm = ({ data }) => {
               <div className="flex-shrink-0 h-20 w-20 rounded-lg overflow-hidden border-2 border-[#FF3811]/10 shadow-sm">
                 <img
                   className="h-full w-full object-cover"
-                  src={data?.img}
-                  alt={data?.title}
+                  src={data?.service_img}
+                  alt={data?.service_name}
                 />
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-gray-900">
-                  {data?.title}
+                  {data?.service_name}
                 </h3>
                 <div className="mt-1.5 flex items-baseline">
                   <FaDollarSign className="text-[#FF3811] mr-1 h-3.5 w-3.5" />
                   <span className="text-2xl font-bold text-[#FF3811]">
-                    {data?.price}
+                    {data?.service_price}
                   </span>
                   <span className="ml-2 text-sm text-gray-500 font-medium">
                     Total
@@ -153,6 +148,7 @@ const CheckoutForm = ({ data }) => {
                   </label>
                   <div className="relative">
                     <input
+                      defaultValue={data?.date}
                       required
                       name="date"
                       type="date"
@@ -171,6 +167,7 @@ const CheckoutForm = ({ data }) => {
                   </label>
                   <div className="relative">
                     <input
+                      defaultValue={data?.phone}
                       required
                       name="phone"
                       type="tel"
@@ -190,6 +187,7 @@ const CheckoutForm = ({ data }) => {
                   </label>
                   <div className="relative">
                     <input
+                      defaultValue={data?.address}
                       required
                       name="address"
                       type="text"
@@ -228,7 +226,7 @@ const CheckoutForm = ({ data }) => {
                   <ImSpinner9 className="animate-spin m-auto" />
                 ) : (
                   <>
-                    Confirm Booking
+                    Update Booking
                     <FaArrowRight className="w-4 h-4 mt-0.5" />
                   </>
                 )}
@@ -239,6 +237,4 @@ const CheckoutForm = ({ data }) => {
       </div>
     </div>
   );
-};
-
-export default CheckoutForm;
+}
