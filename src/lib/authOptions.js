@@ -68,6 +68,13 @@ export const authOptions = {
       return true;
     },
 
+    async redirect({ url, baseUrl }) {
+      // Handle redirect URLs safely
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
+
     // Handle the JWT token creation and updates
     async jwt({ token, user }) {
       if (user) {

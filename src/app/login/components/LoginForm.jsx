@@ -1,15 +1,23 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { ImSpinner9 } from "react-icons/im";
 import SocialLogin from "@/app/components/Shared/SocialLogin";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get safe redirect URL
+  const callbackUrl = useMemo(() => {
+    const redirect = searchParams.get("redirect");
+    return redirect && redirect.startsWith("/")
+      ? decodeURIComponent(redirect)
+      : "/";
+  }, [searchParams]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,25 +25,20 @@ export default function LoginForm() {
     const email = form.email.value;
     const password = form.password.value;
 
-    if (!email || !password) {
-      toast.error("Please fill in both fields");
-      return;
-    }
-
-    setLoading(true);
-
     try {
+      setLoading(true);
       const response = await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/",
+        callbackUrl,
         redirect: false,
       });
-      console.log(response);
+
       if (response.ok) {
         toast.success("Logged In Successfully!");
-        router.push("/");
         form.reset();
+
+        window.location.href = callbackUrl;
       } else {
         toast.error("Authentication failed. Please check your credentials.");
       }
